@@ -1,7 +1,8 @@
 import React from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -11,8 +12,16 @@ const Navbar = () => {
           CRUD USUARIOS
         </Typography>
         <Stack direction="row" spacing={2}>
-            <Button color="inherit">Usuarios</Button>
-            <Button color="inherit">Agregar usuarios</Button>
+          <Button color="inherit">
+            <Link className="nav-link" to="/">
+              Usuarios
+            </Link>
+          </Button>
+          <Button color="inherit">
+            <Link className="nav-link" to="/UserForm">
+              Agregar usuarios
+            </Link>
+          </Button>
         </Stack>
       </Toolbar>
     </AppBar>

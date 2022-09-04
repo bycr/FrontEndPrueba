@@ -8,7 +8,9 @@ import {
   TableRow,
   TableCell,
   Paper,
+  Typography,
 } from "@mui/material";
+import Button from "@mui/material/Button";
 
 const UsersList = () => {
   const [documents, setlisDoc] = useState([]);
@@ -19,12 +21,16 @@ const UsersList = () => {
   useEffect(() => {
     const obtenerDocuments = async () => {
       const url = "http://127.0.0.1:8000/document";
-      const resul = await axios.get(url);
+      await axios
+        .get(url)
+        .then((resul) => setlisDoc(resul.data))
+        .catch((err) => console.log(err));
       //console.log(resul.data);
-      setlisDoc(resul.data);
     };
     obtenerDocuments();
   }, []);
+
+  console.log(documents);
 
   useEffect(() => {
     const obtenerUsers = async () => {
@@ -36,33 +42,77 @@ const UsersList = () => {
     obtenerUsers();
   }, []);
 
-  console.log(users);
+  const postDelete = async (id, e) => {
+    e.preventDefault();
+    const endpoint = `http://127.0.0.1:8000/user/${id}`;
+    //console.log(postData);
+    await axios
+      .delete(endpoint)
+      .then((res) => console.log("eliminado", res))
+      .catch((err) => console.error(err));
+  };
 
-  console.log(documents);
+  //console.log(users);
+
+  //console.log(documents);
 
   return (
     <>
-      <h1>aqui</h1>
       <TableContainer component={Paper}>
-        <Table aria-label="simple table">
+        <Table
+          sx={{
+            mt: 2,
+            ml: 2,
+            mr: 2,
+            justify: 'center',
+            minWidth: 620,
+            backgroundColor: "text.secondary",
+            borderColor: "secondary.main",
+          }}
+          aria-label="simple table"
+        >
           <TableHead>
             <TableRow>
-              <TableCell>Documento</TableCell>
-              <TableCell>Tipo de documento</TableCell>
-              <TableCell>Nombres</TableCell>
-              <TableCell>Apellidos</TableCell>
+              <TableCell align="center">
+                <Typography variant="h6">Documento</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h6">Tipo de documento</Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h6">Nombres</Typography>{" "}
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="h6">Apellidos</Typography>{" "}
+              </TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map ((row) => (  
+            {users.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell>{row.document}</TableCell>
-                <TableCell>{row.Tipe_document}</TableCell>
-                <TableCell>{row.names}</TableCell>
-                <TableCell>{row.surnames}</TableCell>
+                <TableCell align="center">{row.document}</TableCell>
+                <TableCell align="center">{row.Tipe_document}</TableCell>
+                <TableCell align="center">{row.names}</TableCell>
+                <TableCell align="center">{row.surnames}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={(e) => postDelete(row.userId, e)}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button variant="contained" color="success">
+                    Actualizar
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
