@@ -8,8 +8,26 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 const UserForm = () => {
+
+  const {id} = useParams();
+
+  console.log({id});
+  //para la redirección
+  let navigate = useNavigate();
+
+  //para el snackbar
+  const [open, setOpen] = React.useState(false);
+
   const [Tipe_document, setlisDoc] = React.useState("");
 
   //inputs
@@ -22,6 +40,10 @@ const UserForm = () => {
     setlisDoc(event.target.value);
   };
 
+  const putData = async (id ) => {
+    const endpoint = `http://127.0.0.1:8000/user/${id}`;
+  };
+
   const postData = async () => {
     const endpoint = "http://127.0.0.1:8000/user";
     const postData = {
@@ -32,10 +54,22 @@ const UserForm = () => {
       hobbie,
     };
     //console.log(postData);
-    await axios 
+    await axios
       .post(endpoint, postData)
-      .then((res) => console.log("mando", res))
+      .then((res) => {
+        if (res.status === 200) {
+          navigate("/", { replace: true });
+          setOpen(true);
+        }
+      })
       .catch((err) => console.error(err));
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -109,6 +143,19 @@ const UserForm = () => {
               <Button variant="contained" color="success" onClick={postData}>
                 Guardar
               </Button>
+              <Snackbar
+                open={open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+              >
+                <Alert
+                  onClose={handleClose}
+                  severity="success"
+                  sx={{ width: "100%" }}
+                >
+                  Guardado correctamente!!
+                </Alert>
+              </Snackbar>
             </Stack>
           </FormControl>
         </form>

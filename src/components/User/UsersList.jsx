@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   TableContainer,
@@ -11,8 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import UserForm from "./UserForm";
 
 const UsersList = () => {
+  //id para actualizar
+
+  let navigate = useNavigate();
   const [documents, setlisDoc] = useState([]);
 
   const [users, setlisUsers] = useState([]);
@@ -30,7 +35,7 @@ const UsersList = () => {
     obtenerDocuments();
   }, []);
 
-  console.log(documents);
+  //console.log(documents);
 
   useEffect(() => {
     const obtenerUsers = async () => {
@@ -48,9 +53,22 @@ const UsersList = () => {
     //console.log(postData);
     await axios
       .delete(endpoint)
-      .then((res) => console.log("eliminado", res))
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("eliminado");
+        }
+      })
       .catch((err) => console.error(err));
   };
+
+  const handleEdit = (id, document_, names, surnames, Tipe_document) => {
+    localStorage.setItem('document',document_);
+    localStorage.setItem('names',names);
+    localStorage.setItem('surnames',surnames);
+    localStorage.setItem('hobbie',surnames);
+    localStorage.setItem('Tipe_document_id',Tipe_document);
+    navigate(`/UserForm/${id}`)
+  }
 
   //console.log(users);
 
@@ -64,7 +82,7 @@ const UsersList = () => {
             mt: 2,
             ml: 2,
             mr: 2,
-            justify: 'center',
+            justify: "center",
             minWidth: 620,
             backgroundColor: "text.secondary",
             borderColor: "secondary.main",
@@ -109,7 +127,19 @@ const UsersList = () => {
                   </Button>
                 </TableCell>
                 <TableCell>
-                  <Button variant="contained" color="success">
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={() =>
+                      handleEdit(
+                        row.userId,
+                        row.document,
+                        row.names,
+                        row.surnames,
+                        row.Tipe_document
+                      )
+                    }
+                  >
                     Actualizar
                   </Button>
                 </TableCell>

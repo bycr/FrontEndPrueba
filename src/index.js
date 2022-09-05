@@ -20,7 +20,7 @@ root.render(
       <Routes>
         <Route exact path="/" element={<UserList />} />
         <Route exact path="/UserForm" element={<UserForm />} />
-        
+        <Route path="/UserForm/:userId" element={<UserForm />} />
         
       </Routes>
     </div>
